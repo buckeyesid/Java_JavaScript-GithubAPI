@@ -1,0 +1,85 @@
+\documentclass{article}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+\section*{Java vs JavaScript}
+
+The below section calculates and compares the Java and JavaScript repositories
+
+<<echo=FALSE>>=
+
+library(jsonlite)
+library(plyr)
+library(ggplot2)
+library(scales)
+
+@
+
+\subsection*{Java Repositories}
+
+Giving the vairable entries for Java
+<<>>=
+from_date <- '2015-03-01'
+to_date <- '2015-03-31'
+language_java <- 'java'
+@
+
+Entering and forming the URL for java repositories
+<<>>=
+
+URL_java <-paste0('https://api.github.com/search/repositories?q=created%3A%22',
+             from_date,'+..+',to_date,'%22','+language:',language_java, '&page=1',
+             '&per_page=1')
+
+@
+
+Getting the JSON data into the list and displaying the total count
+<<>>=
+list_func_java = jsonlite::fromJSON(URL_java)
+list_func_java$total_count
+@
+
+\subsection*{JavaScript Repositories}
+
+Giving the vairable entries for JavaScript
+<<>>=
+from_date <- '2015-03-01'
+to_date <- '2015-03-31'
+language_javaS <- 'javascript'
+@
+
+Entering and forming the URL for java repositories
+<<>>=
+
+URL_javaS <-paste0('https://api.github.com/search/repositories?q=created%3A%22',
+             from_date,'+..+',to_date,'%22','+language:',language_javaS, 
+             '&page=1','&per_page=1')
+
+@
+
+Getting the JSON data into the list and displaying the total count
+<<>>=
+list_func_javaS = jsonlite::fromJSON(URL_javaS)
+list_func_javaS$total_count
+@
+
+\subsection*{Comparision}
+
+Both Java and JavaScript are predominant laguages and have a lot of repositories in GitHub. To compare the I will plot a bar graph to display which one is more popular.
+
+<<>>=
+#getting the values into variables and creating a data frame
+values <- c(language_java,language_javaS)
+count <- c(list_func_java$total_count,list_func_javaS$total_count)
+
+#data frame for plotting graph
+df <- data.frame(values,count)
+@
+
+The graph depicting the values for Java and JavaScript: 
+<<fig=TRUE>>=
+ggplot(data=df, aes(x=values, y=count, fill=values))+ geom_bar(stat="identity")
+@
+
+As we can see from the above graph we can see that Java has more repositories than JavaScript.
+\end{document}
